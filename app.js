@@ -2,12 +2,11 @@ const express = require('express')
 const app = express()
 
 
+app.use(express.static(__dirname, { dotfiles: 'allow' } ));
 
 app.use(express.static("./public"))
 
-app.use(express.static(__dirname, { dotfiles: 'allow' } ));
-
-app.use(express.static("./well-known/acme-challenge/L2P-wivDRzDfD-_VIFpcZtx6Ayys12PzjmntUUypYD0"))
+app.use(express.static("./well-known"))
 
 
 app.listen(80 , ()=>{
