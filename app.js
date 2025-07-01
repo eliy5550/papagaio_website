@@ -32,7 +32,7 @@ app.use(express.static("./public"))
 
 
 app.listen(9000, () => {
-	console.log('HTTP Server running on port 80');
+	console.log('HTTP Server running on port 9000');
 });
 
 
