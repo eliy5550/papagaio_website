@@ -31,13 +31,11 @@ app.use(express.static("./public"))
 
 
 
-app.listen(80, () => {
+app.listen(9000, () => {
 	console.log('HTTP Server running on port 80');
 });
 
-app.listen(433, () => {
-	console.log('HTTPS Server running on port 443');
-});
+
 
 // httpsServer.listen(443, () => {
 // 	console.log('HTTPS Server running on port 443');
