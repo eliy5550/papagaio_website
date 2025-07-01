@@ -5,33 +5,69 @@ const http = require('http');
 const https = require('https');
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+const mysql = require("mysql2")
 
-
+app.use(bodyParser.urlencoded())
+app.use(bodyParser.json())
 // app.use(express.static(__dirname, { dotfiles: 'allow' } ));
 
 app.use(express.static("./public"))
 
-// app.use(express.static("./well-known"))
+const config = {
+	host: 'localhost',
 
-// // Certificate
-// const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
-// const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
-// const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
+	user: 'root',
+	password: '123456',
+	database: 'pta',
+};
 
-// const credentials = {
-// 	key: privateKey,
-// 	cert: certificate,
-// 	ca: ca
-// };
+const connection = mysql.createConnection(config);
+
+app.get("/get_checkpoint_reports", async (req, res) => {
+	connection.execute("select * from checkpoints_counter", (e, r) => {
+		if (e) {
+			return res.status(500).json({ message: "error getting checkpoints counter data", error: e })
+		}
+
+		res.status(200).json(r)
+	})
+
+})
 
 
-// Starting both http & https servers
-//const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(credentials, app);
+app.post("/checkpoint_report", (req, res) => {
+	if (req.body.user_id == null || req.body.user_id == undefined) {
+		res.status(400).json({ message: "missing user_id!" })
+	}
+	//if exists -> increment
+	connection.execute(`select * from checkpoints_counter where user_id ="${req.body.user_id}";`, (e, r) => {
+		if (e) return res.status(500).json({ message: "error getting checkpoints counter data", error: e })
+
+		if (r.length >= 1) {
+			connection.execute(`update checkpoints_counter set checkpoints = checkpoints+1 where user_id = "${req.body.user_id}";`, (e) => {
+				if (e) return res.status(500).json({ message: "error updating checkpoints for user", error: e })
+					return res.status(200).json({message : "checkpoint recorded"})
+			})
+		}
+		//if not -> create
+		else {
+			connection.execute(`insert into checkpoints_counter (user_id , checkpoints) values ("${req.body.user_id}" , 1);`, (e) => {
+				if (e) return res.status(500).json({ message: "error inserting new user", error: e })
+					return res.status(200).json({message: "new user and checkpoint recorded"})
+			})
+
+		}
+	})
+})
+
 
 
 
 app.listen(80, () => {
+	setInterval(() => {
+		connection.ping() // dont close this connection
+	}, 1000 * 30);
 	console.log('HTTP Server running on port 80');
 });
 app.listen(443, () => {
