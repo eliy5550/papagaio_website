@@ -31,8 +31,11 @@ app.use(express.static("./public"))
 
 
 
-app.listen(11000, () => {
-	console.log('HTTP Server running on port 11000');
+app.listen(80, () => {
+	console.log('HTTP Server running on port 80');
+});
+app.listen(443, () => {
+	console.log('HTTP Server running on port 443');
 });
 
 
