@@ -16,7 +16,6 @@ app.use(express.static("./public"))
 
 const config = {
 	host: '127.0.0.1',
-
 	user: 'root',
 	password: '123456',
 	database: 'pta',
@@ -47,14 +46,14 @@ app.post("/checkpoint_report", (req, res) => {
 		if (r.length >= 1) {
 			connection.execute(`update checkpoints_counter set checkpoints = checkpoints+1 where user_id = "${req.body.user_id}";`, (e) => {
 				if (e) return res.status(500).json({ message: "error updating checkpoints for user", error: e })
-					return res.status(200).json({message : "checkpoint recorded"})
+				return res.status(200).json({ message: "checkpoint recorded" })
 			})
 		}
 		//if not -> create
 		else {
 			connection.execute(`insert into checkpoints_counter (user_id , checkpoints) values ("${req.body.user_id}" , 1);`, (e) => {
 				if (e) return res.status(500).json({ message: "error inserting new user", error: e })
-					return res.status(200).json({message: "new user and checkpoint recorded"})
+				return res.status(200).json({ message: "new user and checkpoint recorded" })
 			})
 
 		}
@@ -71,7 +70,10 @@ app.listen(80, () => {
 	console.log('HTTP Server running on port 80');
 });
 
-var server = https.createServer(app)
+var server = https.createServer({
+	key: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/privkey.pem'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/fullchain.pem')
+}, app)
 
 server.listen(443, () => {
 	console.log('HTTP Server running on port 443');
