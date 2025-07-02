@@ -2,7 +2,7 @@
 // Dependencies
 const fs = require('fs');
 const http = require('http');
-const https = require('https');
+// const https = require('https');
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -63,7 +63,7 @@ app.post("/checkpoint_report", (req, res) => {
 
 
 
-app.listen(80, () => {
+app.listen(9000, () => {
 	setInterval(() => {
 		connection.ping() // dont close this connection
 	}, 1000 * 60 * 29);
@@ -71,17 +71,17 @@ app.listen(80, () => {
 });
 
 
-try {
-	var server = https.createServer({
-		key: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/privkey.pem'),
-		cert: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/fullchain.pem')
-	}, app)
+// try {
+// 	var server = https.createServer({
+// 		key: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/privkey.pem'),
+// 		cert: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/fullchain.pem')
+// 	}, app)
 
-	server.listen(443, () => {
-		console.log('HTTP Server running on port 443');
-	});
+// 	server.listen(443, () => {
+// 		console.log('HTTP Server running on port 443');
+// 	});
 
-} catch { }
+// } catch { }
 
 
 
