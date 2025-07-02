@@ -70,14 +70,18 @@ app.listen(80, () => {
 	console.log('HTTP Server running on port 80');
 });
 
-var server = https.createServer({
-	key: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/privkey.pem'),
-	cert: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/fullchain.pem')
-}, app)
 
-server.listen(443, () => {
-	console.log('HTTP Server running on port 443');
-});
+try {
+	var server = https.createServer({
+		key: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/privkey.pem'),
+		cert: fs.readFileSync('/etc/letsencrypt/live/papagaiogames.com/fullchain.pem')
+	}, app)
+
+	server.listen(443, () => {
+		console.log('HTTP Server running on port 443');
+	});
+
+} catch { }
 
 
 
