@@ -70,7 +70,10 @@ app.listen(80, () => {
 	}, 1000 * 30);
 	console.log('HTTP Server running on port 80');
 });
-app.listen(443, () => {
+
+var server = https.createServer(app)
+
+server.listen(443, () => {
 	console.log('HTTP Server running on port 443');
 });
 
