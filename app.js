@@ -66,7 +66,7 @@ app.post("/checkpoint_report", (req, res) => {
 app.listen(80, () => {
 	setInterval(() => {
 		connection.ping() // dont close this connection
-	}, 1000 * 30);
+	}, 1000 * 60 * 30);
 	console.log('HTTP Server running on port 80');
 });
 
